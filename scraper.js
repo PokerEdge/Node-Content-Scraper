@@ -78,9 +78,10 @@ for(let i=0; i<8;i++){
           selector: ".products img",
           attr: "src"
     },
-    price: scrapeIt('http://www.shirts4mike.com/shirt.php?id=101', {
-              selector: "span.price"
-    })
+    // price {
+    //       selector: scrapeIt('http://www.shirts4mike.com/shirt.php?id=101', {
+    //           selector: "span.price"
+    // })
   }, (err, page) => {
       console.log(err || page);
   }); //end of scrapeIt function call
