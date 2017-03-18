@@ -1,0 +1,29 @@
+{
+  "name": "node-content-scraper",
+  "version": "1.0.0",
+  "description": "A content scraping application using node.js that stores site data into a csv file within a data folder.",
+  "main": "scraper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "PokerEdge"
+  },
+  "keywords": [
+    "node",
+    "node.js",
+    "scraper",
+    "csv",
+    "scrape-it",
+    "json2csv",
+    "treehouse"
+  ],
+  "author": "Reid Young",
+  "license": "MIT",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "json2csv": "^3.7.3",
+    "scrape-it": "^3.3.0"
+  }
+}
