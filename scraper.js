@@ -1,27 +1,39 @@
+"use strict";
+
 // const http = require('http');
 const fs = require('fs');
 const scrapeIt = require('scrape-it');
 const json2csv = require('json2csv');
 
-//Create a named directory if no such directory exists
+//Create named directory if no such directory exists
 const dir = './data';
 
 if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
 }
 
-//run the scrape function 8 times to scrape data from 8 shirts
-  //use CSS pseudo selector nth-type-of with the loop variable value as n
-  //Use try and catch to wrap the scrapeIt function in case there are only
-    //7 or fewer items to scrape
+// //BEGIN JSON2CSV
+// var fields = ['field1', 'field2', 'field3'];
+//
+// try {
+//   var result = json2csv({ data: myData, fields: fields });
+//   console.log(result);
+// } catch (err) {
+//   // Errors are thrown for bad options, or if the data is empty and no fields are provided.
+//   // Be sure to provide fields if it is possible that your data array will be empty.
+//   console.error(err);
+// }
+// //END JSON2CSV
+
 
 //How do we access the next list item's URL
 
-const siteURL = 'http://shirts4mike.com/shirts.php';
+const siteURL = 'http://shirts4mike.com';
+let urlExtension = '/shirts.php';
 
-for(let i=0; i<8;i++){
+// for(let i=0; i<8;i++){
 
-  scrapeIt(siteURL, {
+  scrapeIt(siteURL+urlExtension, {
       // Fetch the articles
       // products: {
     //       unorderedListItem: ".products"
@@ -49,43 +61,78 @@ for(let i=0; i<8;i++){
     //       }
     //   }
     //
+
+//price, title, url and image url from the product page
+
     //   // Fetch the blog pages
-    // , pages: {
-    //       listItem: "li.page"
-    //     , name: "pages"
-    //     , data: {
-    //           title: "a"
-    //         , url: {
-    //               selector: "a"
-    //             , attr: "href"
-    //           }
-    //       }
-    //   },
-    //
+    products: {
+          listItem: ".products li"
+        , data: {
+
+              title: {
+                    selector: "img"
+                  , attr: "alt"
+              }
+            , url: {
+                    selector: "a"
+                  , attr: "href"
+              }
+            , imageURL: {
+                    selector: "a"
+                  , attr: "href"
+              }
+            , price: scrapeIt('http://www.shirts4mike.com/shirt.php?id=101', { //Need to use dynamic URL
+
+                    shirtPrice: ".price"
+
+              }, (err, page) => {
+                    console.log(err || page);
+              })
+          }
+    }
+
     //   // Fetch some other data from the page
 
     //:nth-type-of(i)
     //selector: ".products:nth-child(i) a",
-    URL: {
-          selector: ".products a",
-          attr: "href"
-    },
-    title: {
-          selector: ".products img",
-          attr: "alt"
-    },
-    imageURL: {
-          selector: ".products img",
-          attr: "src"
-    },
-    // price {
-    //       selector: scrapeIt('http://www.shirts4mike.com/shirt.php?id=101', {
-    //           selector: "span.price"
-    // })
+
+
+    // //This works
+    // products:{
+    //
+    //   listItem: ".products",
+    //   data : {
+    //       URL: {
+    //           selector: "a",
+    //           attr: "href"
+    //       },
+    //       title: {
+    //           selector: "img",
+    //           attr: "alt"
+    //       },
+    //       imageURL: {
+    //           selector: "img",
+    //           attr: "src"
+    //       },
+
+
+      // price: scrapeIt('http://www.shirts4mike.com/shirt.php?id=101', {
+      //           selector: "span.price"
+      // }),
   }, (err, page) => {
       console.log(err || page);
   }); //end of scrapeIt function call
-} //end of for loop
+// } //end of for loop
+
+//DOES WORK TO FIND PRICE OF PRODUCT GIVEN URL
+// scrapeIt('http://www.shirts4mike.com/shirt.php?id=101', {
+//
+//         shirtPrice: ".price"
+//
+//       }, (err, page) => {
+//           console.log(err || page);
+//       });
+
 
 //Outside of loop as only one Date need be instantiated
 const today = new Date();
