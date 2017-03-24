@@ -1,9 +1,9 @@
 "use strict";
 
 // const http = require('http');
-const fs = require('fs');
-const scrapeIt = require('scrape-it');
-const json2csv = require('json2csv');
+const fs = require('fs')
+  , scrapeIt = require('scrape-it')
+  , json2csv = require('json2csv');
 
 //Create named directory if no such directory exists
 const dir = './data';
@@ -11,6 +11,9 @@ const dir = './data';
 if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
 }
+
+//MAKE A FUNCTION THAT TAKES IN THE BASE URL AND THE URL ARGUMENT THAT SCRAPES THE FIRST URL
+  //AND THEN THE URL WITH A NEW ARGUMENT PASSED
 
 // //BEGIN JSON2CSV
 // var fields = ['field1', 'field2', 'field3'];
@@ -28,43 +31,17 @@ if (!fs.existsSync(dir)){
 
 //How do we access the next list item's URL
 
-const siteURL = 'http://shirts4mike.com';
-let urlExtension = '/shirts.php';
+// function scrapeSite(request, response){
+  //
+  // if (response.url === ''){
+  //   //scrape home URL and then change URL to the product's URL to find price
+  // }
 
-// for(let i=0; i<8;i++){
+const siteURL = 'http://shirts4mike.com/';
+let urlExtension = 'shirts.php'; //THE URL EXTENSION COMES FROM THE URL WITHIN A SCRAPEIT CALL
 
-  scrapeIt(siteURL+urlExtension, {
-      // Fetch the articles
-      // products: {
-    //       unorderedListItem: ".products"
-    //     , data: {
-    //
-    //           // Get the article date and convert it into a Date object
-    //           createdAt: {
-    //               selector: ".date"
-    //             , convert: x => new Date(x)
-    //           }
-    //
-    //           // Get the title
-    //         , title: "a.article-title"
-    //
-    //           // Nested list
-    //         , tags: {
-    //               listItem: ".tags > span"
-    //           }
-    //
-    //           // Get the content
-    //         , content: {
-    //               selector: ".article-content"
-    //             , how: "html"
-    //           }
-    //       }
-    //   }
-    //
+const scrapedJSON =  scrapeIt(siteURL+urlExtension, {
 
-//price, title, url and image url from the product page
-
-    //   // Fetch the blog pages
     products: {
           listItem: ".products li"
         , data: {
@@ -73,74 +50,123 @@ let urlExtension = '/shirts.php';
                     selector: "img"
                   , attr: "alt"
               }
+            , imageURL: {
+                      selector: "img"
+                    , attr: "src"
+                }
             , url: {
                     selector: "a"
                   , attr: "href"
+                  // , convert siteURL => siteURL + url
               }
-            , imageURL: {
-                    selector: "a"
-                  , attr: "href"
-              }
-            , price: scrapeIt('http://www.shirts4mike.com/shirt.php?id=101', { //Need to use dynamic URL
 
-                    shirtPrice: ".price"
+            , getPrice: scrapeIt('http://shirts4mike.com/shirts.php',{
+                      priceURL:  {
+                              listItem: ".products li"
+                            , data: {
+                                  url: {
+                                      selector:"a"
+                                   ,  attr: "href"
+                                  }
+                              }
+                          }
+                      }, (err, page) => {
+                            console.log(err || page);
+                      })
 
-              }, (err, page) => {
-                    console.log(err || page);
-              })
+                      // ,  getPrice: {
+                      //       scrapeIt('http://www.shirts4mike.com/shirt.php?id=101', {
+                      //
+                      //           selector: ".price"
+                      //       })
+                      //       , (err, page) => {
+                      //               console.log(err || page);
+                      //       });
+                      //   }
           }
-    }
+      }
+  }
 
-    //   // Fetch some other data from the page
-
-    //:nth-type-of(i)
-    //selector: ".products:nth-child(i) a",
-
-
-    // //This works
-    // products:{
-    //
-    //   listItem: ".products",
-    //   data : {
-    //       URL: {
-    //           selector: "a",
-    //           attr: "href"
-    //       },
-    //       title: {
-    //           selector: "img",
-    //           attr: "alt"
-    //       },
-    //       imageURL: {
-    //           selector: "img",
-    //           attr: "src"
-    //       },
-
-
-      // price: scrapeIt('http://www.shirts4mike.com/shirt.php?id=101', {
-      //           selector: "span.price"
-      // }),
-  }, (err, page) => {
-      console.log(err || page);
+  , (err, page) => {
+        console.log(err || page);
   }); //end of scrapeIt function call
-// } //end of for loop
 
-//DOES WORK TO FIND PRICE OF PRODUCT GIVEN URL
-// scrapeIt('http://www.shirts4mike.com/shirt.php?id=101', {
+
+function getPrice(){
+  scrapeIt('http://shirts4mike.com/shirts.php',{
+          // shirtPrice: ".price"
+        priceURL:  {
+            listItem: ".products li"
+          , data: {
+                url: {
+                    selector:"a"
+                 ,  attr: "href"
+                }
+            }
+        }
+    }, (err, page) => {
+          console.log(err || page);
+    })
+}
+
+// , priceURL: {
+//         priceURL: convert scrapeIt(siteURL + urlExtension) => scrapeIt(siteURL + ) //Use 'convert' convert x => x * x;
+// }
+
+// convert (Function): An optional function to change the value.
+
+// // ES5
+// var selected = allJobs.filter(function (job) {
+//   return job.isSelected();
+// });
 //
+// // ES6
+// var selected = allJobs.filter(job => job.isSelected());
+
+
+
+// // DOES WORK TO FIND PRICE OF PRODUCT GIVEN URL
+// let productURL = '/shirt.php?id=101';
+//
+// scrapeIt(`http://www.shirts4mike.com${productURL}`, {
+//
+//         shirtPrice: ".price"
+//
+// }, (err, page) => {
+//         console.log(err || page);
+// });
+
+
+
+//if urlExtension != 'shirts.php' scrape the site for all that shit
+  //replace URL with the scraped URL
+  //else replace the URL with the
+
+
+              // , price: { convert x => x * x
+              //            scrapeIt(x + y, {
+              //               //find price URL
+              //            })
+
+// // urlExtension = request.url.replace("/", "");
+// function scrapeSite(siteURL, scrapedJSON){
+//   srapeIt(siteURL + scapedJSON.products.url);
+// }
 //         shirtPrice: ".price"
 //
 //       }, (err, page) => {
 //           console.log(err || page);
-//       });
+//       });}))
 
 
 //Outside of loop as only one Date need be instantiated
 const today = new Date();
-const year = today.getFullYear();
-const month = today.getMonth();
-const date = today.getDate();
+const currentDate = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
+// const month = today.getMonth();
+// const date = today.getDate();
 
-console.log(year, month +1, date);
+// console.log(year, month +1, date);
+console.log(currentDate);
 
 //How do we scrape price? We would have to emulate a click through and read the price from the URL of the product list item
   //Use the scraped product URL and concatonate it with scrapeIt() to scrape the product price
@@ -190,6 +216,9 @@ console.log(year, month +1, date);
 
 //7. If http://shirts4mike.com is down, an error message describing the issue should
   //appear in the console.
+
+//8. use the ignoreGit file to manage the size of the nodeModules folder when uploaded
+  //to GitHub
 
 //*Edit your package.json file so that your program runs when the 'npm start'
   //command is run
