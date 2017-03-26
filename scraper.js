@@ -67,6 +67,11 @@ const scrapedJSON =  scrapeIt(siteURL+urlExtension, {
                                   url: {
                                       selector:"a"
                                    ,  attr: "href"
+                                   ,  convert: x => scrapeIt(siteURL + x, {
+                                          price: ".price"
+                                      },  (err, page) => {
+                                              console.log(err || page);
+                                      })
                                   }
                               }
                           }
@@ -91,23 +96,22 @@ const scrapedJSON =  scrapeIt(siteURL+urlExtension, {
         console.log(err || page);
   }); //end of scrapeIt function call
 
-
-function getPrice(){
-  scrapeIt('http://shirts4mike.com/shirts.php',{
-          // shirtPrice: ".price"
-        priceURL:  {
-            listItem: ".products li"
-          , data: {
-                url: {
-                    selector:"a"
-                 ,  attr: "href"
-                }
-            }
-        }
-    }, (err, page) => {
-          console.log(err || page);
-    })
-}
+// function getPrice(){
+//   scrapeIt('http://shirts4mike.com/shirts.php',{
+//           // shirtPrice: ".price"
+//         priceURL:  {
+//             listItem: ".products li"
+//           , data: {
+//                 url: {
+//                     selector:"a"
+//                  ,  attr: "href"
+//                 }
+//             }
+//         }
+//     }, (err, page) => {
+//           console.log(err || page);
+//     })
+// }
 
 // , priceURL: {
 //         priceURL: convert scrapeIt(siteURL + urlExtension) => scrapeIt(siteURL + ) //Use 'convert' convert x => x * x;
