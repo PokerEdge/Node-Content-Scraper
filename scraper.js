@@ -59,63 +59,23 @@ const scrapedJSON =  scrapeIt(siteURL+urlExtension, {
                   , attr: "href"
                   // , convert siteURL => siteURL + url
               }
-
-            , getPrice: scrapeIt('http://shirts4mike.com/shirts.php',{
-                      priceURL:  {
-                              listItem: ".products li"
-                            , data: {
-                                  url: {
-                                      selector:"a"
-                                   ,  attr: "href"
-                                   ,  convert: x => scrapeIt(siteURL + x, {
-                                          price: ".price"
-                                      },  (err, page) => {
-                                              console.log(err || page);
-                                      })
-                                  }
-                              }
-                          }
-                      }, (err, page) => {
-                            console.log(err || page);
-                      })
-
-                      // ,  getPrice: {
-                      //       scrapeIt('http://www.shirts4mike.com/shirt.php?id=101', {
-                      //
-                      //           selector: ".price"
-                      //       })
-                      //       , (err, page) => {
-                      //               console.log(err || page);
-                      //       });
-                      //   }
+            , priceURLurl: {
+                   selector:"a"
+                 , attr: "href"
+                 , convert: x => scrapeIt(siteURL + x, {
+                       price: ".price"
+                   },  (err, page) => {
+                           console.log(err || page); //logs product price
+                   })
+              }
           }
       }
   }
 
   , (err, page) => {
-        console.log(err || page);
+        console.log(err || page); //USE FS HERE TO STORE DATA AS CSV
   }); //end of scrapeIt function call
 
-// function getPrice(){
-//   scrapeIt('http://shirts4mike.com/shirts.php',{
-//           // shirtPrice: ".price"
-//         priceURL:  {
-//             listItem: ".products li"
-//           , data: {
-//                 url: {
-//                     selector:"a"
-//                  ,  attr: "href"
-//                 }
-//             }
-//         }
-//     }, (err, page) => {
-//           console.log(err || page);
-//     })
-// }
-
-// , priceURL: {
-//         priceURL: convert scrapeIt(siteURL + urlExtension) => scrapeIt(siteURL + ) //Use 'convert' convert x => x * x;
-// }
 
 // convert (Function): An optional function to change the value.
 
